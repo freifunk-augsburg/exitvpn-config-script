@@ -1,0 +1,14 @@
+This script can be used together with easy-rsa to create openvpn config
+scripts for clients running the meshkit firmware.
+
+To use it:
+
+1. Install easy-rsa in a folder and configure it.
+2. Copy these files and directories directly into that folder
+3. sh make-key.sh <name> <email>
+4. Answer some questions for the certificate
+5. Copy the generated script from configscript/hostkeys/<name>-exitvpn-setup.sh
+   to the /tmp directory of a meshkit router
+6. On the router execute: sh /tmp/<name>-exitvpn-setup.sh
+7. Ready. Please use the VPN in a responsible way
+

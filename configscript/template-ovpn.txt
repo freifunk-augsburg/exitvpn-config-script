@@ -1,0 +1,23 @@
+client
+route-noexec
+dev-type tun
+dev exitvpn
+proto udp
+<connection>
+	remote vpn1.augsburg.freifunk.net 1195
+</connection>
+
+<connection>
+	remote vpn2.augsburg.freifunk.net 1195
+</connection>
+resolv-retry infinite
+nobind
+persist-key
+ns-cert-type server
+cipher BF-CBC
+verb 2
+mute 20
+script-security 3 system
+ca /etc/openvpn/exitvpn/ca.crt
+route-up /etc/openvpn/exitvpn/up.sh
+down /etc/openvpn/exitvpn/down.sh

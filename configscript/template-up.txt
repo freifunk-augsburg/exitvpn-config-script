@@ -1,0 +1,15 @@
+#!/bin/sh
+
+. \$(dirname \$0)/functions.sh
+
+for v in \$vpnservers; do
+	ips="\$(resolve \$v)"
+	for ip in \$ips; do
+		add_rule \$ip
+	done
+done
+
+[ -z "\`ip route show table olsr-default |grep "default via \$ifconfig_remote dev \$dev"\`" ] && ip route add default via \$ifconfig_remote dev \$dev table olsr-default
+[ -z "\`ip route show |grep "192.168.202.1 via \$ifconfig_remote dev \$dev"\`" ] && ip route add 192.168.202.1 via \$ifconfig_remote dev \$dev
+
+

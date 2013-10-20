@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# interface zur firewall zone hinzufuegen
+. /lib/functions.sh
+config_load firewall
+
+add_zone_iface() {
+        config_get name "$1" name
+	if [ "$name" = "wan" ]; then
+		uci add_list firewall.${1}.device="exitvpn"
+		uci changes
+		uci commit firewall
+	fi
+}
+
+config_foreach add_zone_iface zone
+
+
+# Openvpn:
+uci batch <<- EOF
+	set openvpn.exitvpn=openvpn
+	set openvpn.exitvpn.enabled=1
+	set openvpn.exitvpn.config=/etc/openvpn/exitvpn/exitvpn.conf
+	commit
+EOF
+
+# olsrd
+logger -p info -s -t "openvpn-gw" "Enable olsrd dyngw-plain plugin and watch table olsr-default for a inet route"
+uci batch <<- EOF
+	set olsrd.dyngw_plain=LoadPlugin
+	set olsrd.dyngw_plain.ignore=0
+	set olsrd.dyngw_plain.library="olsrd_dyn_gw_plain.so.0.4"
+	set olsrd.dyngw_plain.RtTable="112"
+	commit olsrd
+EOF
+
+# watchdog
+uci batch <<- EOF
+	set freifunk-watchdog.openvpn=process
+	set freifunk-watchdog.openvpn.process=openvpn
+	set freifunk-watchdog.openvpn.initscript=/etc/init.d/openvpn
+	commit freifunk-watchdog
+EOF

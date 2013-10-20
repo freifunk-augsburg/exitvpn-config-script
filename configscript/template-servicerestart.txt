@@ -1,0 +1,7 @@
+echo "Restarting services"
+/etc/init.d/firewall restart
+/etc/init.d/openvpn enable
+/etc/init.d/openvpn restart
+/etc/init.d/olsrd restart
+/etc/init.d/luci_splash restart
+

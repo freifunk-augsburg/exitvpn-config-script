@@ -1,0 +1,19 @@
+#!/bin/sh
+
+
+deps="openvpn olsrd-mod-dyn-gw-plain"
+for d in $deps; do
+	opkg list_installed | grep $d || {
+		logger -s -t openvpn-setupscript -p error "$d is not installed! Please install it and run the script again."
+		exit 1
+	}
+done
+
+TARGETDIR="/etc/openvpn/exitvpn"
+
+[ -d $TARGETDIR ] || {
+	mkdir -p $TARGETDIR || {
+		logger -s -t openvpn-setup: "Error! Cound not create $TARGETDIR, exiting now."
+		exit 1
+	}
+}
